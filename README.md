@@ -31,4 +31,4 @@ return React.createElement('div', {className: 'shopping-list'},
 
 JSX는 JavaScript의 강력한 기능을 가지고 있다. JSX 내부의 중괄호 안에 어떤 JavaScript 표현식도 사용할 수 있다. React 엘리먼트는 JavaScript 객체이며 변수에 저장하거나 프로그램 여기저기에 전달할 수 있다.
 
-ShoppingList 컴포넌트는 <div />와 <li /> 같은 내각 DOM 컴포넌트만을 렌더링하지만 컴포넌트를 조합하여 커스텀 React 컴포넌트를 렌더링하는 것도 가능하다. 예를 들어 <ShoppingList />를 작성하여 모든 쇼핑 목록을 참조할 수 있다. React 컴포넌트는 캡슐화되어 독립적으로 동작할 수 있다. 이러한 이유로 단순한 컴포넌트를 사용하여 복잡한 UI를 구현할 수 있다.
+ShoppingList 컴포넌트는 "<div />"와 "<li />" 같은 내각 DOM 컴포넌트만을 렌더링하지만 컴포넌트를 조합하여 커스텀 React 컴포넌트를 렌더링하는 것도 가능하다. 예를 들어 <ShoppingList />를 작성하여 모든 쇼핑 목록을 참조할 수 있다. React 컴포넌트는 캡슐화되어 독립적으로 동작할 수 있다. 이러한 이유로 단순한 컴포넌트를 사용하여 복잡한 UI를 구현할 수 있다.
