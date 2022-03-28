@@ -1,6 +1,6 @@
 ### ReactStudy
 
-##React란?
+# React란?
 React는 사용자 인터페이스를 구착하기 위한 선언적이고 효율적이며 유연한 javaScript 라이브러리.
 "Component"라고 불리는 작고 고립된 코드의 파편을 이용하여 복잡한 UI를 구성하도록 한다.
 
@@ -179,9 +179,66 @@ function calculateWinner(squares) {
   return null;
 }
 ```
-##Props를 통해 데이터 전달하기
+# Props를 통해 데이터 전달하기
 &lt;Square value={i} />; 처럼 i를 Square Component에 전달하고, Square Component 내부에서는 this.props.value를 이용하여 i 값을 전달 받는다.
 
-##사용자와 상호작용하는 Component 만들기
+# 사용자와 상호작용하는 Component 만들기
 button 태그의 onClick props에 `() => console.log('click')` 과 같이 화살표 함수나 function을 전달해야 한다. `onClick={console.log('click')}`과 같이 전달하면 React는 Component가 다시 렌더링 될 때마다 경고 창을 띄울 것이다.
 
+Square Component를 클릭한 것을 "기억하게" 만들어 "X" 표시를 채워 넣으려면, 무언가를 "기억하기" 위해 Component는 **state**를 사용한다.
+
+React Component는 생성자에 this.state를 설정하는 것으로 state를 가질 수 있다. this.state는 정의된 React Component에 대해 비공개로 간주해야 한다. 이제 Square의 현재 값을 this.state에 저장하고 Square를 클릭하는 경우 변경하도록 해보자.
+
+```
+class Square extends React.Component {
+  constructor(props) {
+  super(props);
+    this.state = {
+      value: null,
+    };
+  }
+
+  render() {
+    return (
+      <button
+        className="square"
+        onClick={() => this.setState({value: 'X'}))}
+      >
+        {this.state.value}
+      </button>
+    );
+  }
+}
+```
+Square의 render 함수 내부에서 onClick 핸들러를 통해 this.setState를 호출하는 것으로 React에게 <button>을 클릭할 때 Square가 다시 렌더링해야 한다고 알릴 수 있다.
+업데이트 이후에 Square의 this.state.value는 'X'가 되어 게임 판에서 X가 나타나는 것을 확인할 수 있다. 어떤 Square를 클릭하던 X가 나타날 것이다.
+  
+Component에서 setState를 호출하면 React는 자동으로 컴포넌트 내부의 자식 Component 역시 업데이트 한다.
+
+# State 끌어올리기
+게임의 state를 각각의 Square Component에서 유지하고 있다. 승자를 확인하기 위해 9개 사각형의 값을 한 곳에 유지해야 한다.
+  
+Board Component에 게임의 상태를 저장하는 것이 가장 좋은 방법이다. 각 Square에 숫자를 넘겨주었을 때와 같이 Board Component는 각 Square에게 prop을 전달하는 것으로 무엇을 표시할지 알려준다.
+  
+**여러개의 자식으로부터 데이터를 모으거나 두 개의 자식 Component들이 서로 통신하게 하려면 부모 Component에 공유 state를 정의해야 한다. 부모 Component는 props를 사용하여 자식 Component에 state를 다시 전달할 수 있다. 이것은 자식 Component들이 서로 또는 부모 Component와 동기화 하도록 한다**
+  
+Square를 클릭하면 Board에서 넘겨받은 onClick 함수가 호출된다. 이 때 일어나는 일을 정리해보자.
+  1. 내장된 DOM &lt;button> Component에 있는 onClick prop은 React에게 클릭 이벤트 리스너를 설정하라고 알려준다.
+  2. 버튼을 클릭하면 React는 Square의 render() 함수에 정의된 onClick 이벤트 핸들러를 호출한다.
+  3. 이벤트 핸들러는 this.props.onClick()를 호출한다. Square의 onClick prop은 Board에서 정의되어 있다.
+  4. Board에서 Square로 `onClick={() => this.handleClick(i)}`를 전달했기 때문에 Square를 클릭하면 Board의 handleClick(i)를 호출한다.
+  
+**DOM <button> 엘리먼트의 onClick 어트리뷰트는 내장된 Component라는 점에서 React에게 특별한 의미가 있다. Square같은 사용자 정의 Component의 경우 이름 지정은 자유롭다. Square의 onClick prop이나 Board의 handleClick 함수에는 어떤 이름도 붙일 수 있으며 코드는 동일하게 작동한다. React에서 이벤트를 나타내는 prop에는 on[Event], 이벤트를 처리하는 함수에는 handle[Event]를 사용하는 것이 일반적이다.**
+
+# 불변성의 중요성
+handleClick에서는 .slice()를 호출하는 것으로 기존 배열을 수정하지 않고 squares 배열의 복사본을 생성하여 수정하는 것의 주의해야 한다.
+기존 배열을 수정하는 것이 아니라 .slice() 연산자를 사용하여 squares 배열의 사본 만들기를 추천했다. 일반적으로 데이터 변경에는 두 가지 방법이 있다. 첫 번째는 데이터의 값을 직접 변경하는 것이다. 두 번째는 원하는 변경 값을 가진 새로운 사본으로 데이터를 교체하는 것이다.
+  1. 복잡한 특징들을 단순하게 만듦
+    직접적인 데이터 변이를 피하는 것은 이전 버전의 게임 이력을 유지하고 나중에 재사용할 수 있게 만든다.
+  2. 변화를 감지함.
+    객체가 직접적으로 수정되기 떄문에 복제가 가능한 객체에서 변화를 감지하는 것은 어렵다. 감지는 복제가 가능한 객체를 이전 사본과 비교하고 전체 객체 트리를 돌아야 한다.
+    불변 객체에서 변화를 감지하는 것은 상당히 쉽다. 참조하고 있는 불변 객체가 이전 객체와 다르다면 객체는 변한 것이다.
+  3. React에서 다시 렌더링하는 시기를 결정함.
+    불변성의 가장 큰 장점은 React에서 순수 Component를 만드는 데 도움을 준다는 것이다. 변하지 않는 데이터는 변경이 이루어졋는지 쉽게 판단할 수 있으며 이를 바탕으로 Component가 
+    다시 렌더링할지를 결정할 수 있다.
+  
