@@ -1,6 +1,6 @@
 ### ReactStudy
 
-#React란?
+##React란?
 React는 사용자 인터페이스를 구착하기 위한 선언적이고 효율적이며 유연한 javaScript 라이브러리.
 "Component"라고 불리는 작고 고립된 코드의 파편을 이용하여 복잡한 UI를 구성하도록 한다.
 
@@ -179,9 +179,9 @@ function calculateWinner(squares) {
   return null;
 }
 ```
-#Props를 통해 데이터 전달하기
+##Props를 통해 데이터 전달하기
 &lt;Square value={i} />; 처럼 i를 Square Component에 전달하고, Square Component 내부에서는 this.props.value를 이용하여 i 값을 전달 받는다.
 
-#사용자와 상호작용하는 Component 만들기
+##사용자와 상호작용하는 Component 만들기
 button 태그의 onClick props에 `() => console.log('click')` 과 같이 화살표 함수나 function을 전달해야 한다. `onClick={console.log('click')}`과 같이 전달하면 React는 Component가 다시 렌더링 될 때마다 경고 창을 띄울 것이다.
 
